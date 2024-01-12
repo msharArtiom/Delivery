@@ -37,12 +37,12 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private Set<Role> roles;
+    private Role role;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
+    @JoinColumn(name = "addres_id", referencedColumnName = "id")
     private Set<Address> address;
 
 }
