@@ -10,9 +10,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static jakarta.servlet.DispatcherType.ERROR;
-import static jakarta.servlet.DispatcherType.FORWARD;
-
 @Configuration
 @EnableWebSecurity(debug = true)
 @RequiredArgsConstructor
@@ -29,8 +26,8 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .dispatcherTypeMatchers(FORWARD, ERROR).permitAll()
                 .requestMatchers(AUTH_WHITELIST).permitAll()
+                .requestMatchers("/restaurant/**").hasRole("RESTAURANT")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

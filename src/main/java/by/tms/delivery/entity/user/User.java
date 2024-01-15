@@ -41,8 +41,8 @@ public class User {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    @OneToMany(cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL ,fetch = FetchType.EAGER)
     @JoinColumn(name = "addres_id", referencedColumnName = "id")
-    private Set<Address> address;
+    private Address address;
 
 }
