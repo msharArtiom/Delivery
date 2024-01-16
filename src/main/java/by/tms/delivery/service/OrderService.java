@@ -1,8 +1,10 @@
 package by.tms.delivery.service;
 
+import by.tms.delivery.entity.enums.Status;
 import by.tms.delivery.entity.order.Order;
 import by.tms.delivery.entity.order.OrderItem;
 import by.tms.delivery.entity.restaurant.MenuItem;
+import by.tms.delivery.entity.user.User;
 import by.tms.delivery.exception.NotFoundException;
 import by.tms.delivery.repository.MenuItemRepository;
 import by.tms.delivery.repository.OrderItemRepository;
@@ -12,7 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -23,9 +29,18 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
     private final OrderRepository orderRepository;
 
-    public Order addMenuItemToOrder(Long orderId, Long menuItemId, int quantity, BigDecimal price) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new NotFoundException("Order not found!"));
+
+    public Order createOrder(Order order){
+        order.setLocalDateTime(LocalDateTime.now());
+        return orderRepository.save(order);
+    }
+
+
+    public Order addMenuItemToOrder(Order order, Long orderId, Long menuItemId, int quantity, BigDecimal price) {
+
+        if(orderRepository.findById(orderId).isEmpty()) {
+            createOrder(order);
+        }
 
         MenuItem menuItem = menuItemRepository.findById(menuItemId)
                 .orElseThrow(() -> new NotFoundException("MenuItem not found!"));
@@ -40,6 +55,13 @@ public class OrderService {
         orderItem = orderItemRepository.save(orderItem);
 
         order.getOrderItemList().add(orderItem);
+        return orderRepository.save(order);
+    }
+
+    public Order deleteMenuItemToOrder(Order order, MenuItem menuItem) {
+
+        order.getOrderItemList().remove(menuItemRepository.findById(menuItem.getId()));
+
         return orderRepository.save(order);
     }
 }
