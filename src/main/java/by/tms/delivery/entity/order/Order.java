@@ -33,7 +33,7 @@ public class Order {
 
     @OneToMany
     @JoinColumn(name = "order_item", referencedColumnName = "id")
-    private List<OrderItem> orderItemList = new ArrayList<>();
+    private List<OrderItem> orderItemList;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
